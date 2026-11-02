@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f1f1f1" />
+    <meta name="description" content="Get to know Bengaluru's trees. Explore the July 2026 tree census, find trees near you, and search by species." />
+    <title>Bengaluru trees · Vipul Sharma</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://trees.vipul.xyz/" />
+    <meta property="og:title" content="Bengaluru trees" />
+    <meta property="og:description" content="Get to know the trees around you. Explore Bengaluru's July 2026 tree census by species, place, or proximity." />
+    <meta property="og:image" content="https://trees.vipul.xyz/social-preview.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bengaluru trees — Get to know the trees around you. A map of Indiranagar with green dots marking census tree locations." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bengaluru trees" />
+    <meta name="twitter:description" content="Get to know the trees around you. Explore Bengaluru's July 2026 tree census by species, place, or proximity." />
+    <meta name="twitter:image" content="https://trees.vipul.xyz/social-preview.jpg" />
+    <meta name="twitter:image:alt" content="Bengaluru trees — Get to know the trees around you. A map of Indiranagar with green dots marking census tree locations." />
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.vipul.xyz/js/pa-PWkyIQtM9tYBDPUzW7153.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+  </head>
+  <body>
+    <main class="app">
+      <aside class="sidebar" aria-label="Tree explorer">
+        <header>
+          <h1>Bengaluru trees</h1>
+          <p class="intro">Find out what’s growing around you. Explore the city’s tree census.</p>
+        </header>
+        <section class="search-section" aria-label="Find trees">
+          <div class="place-search">
+            <label for="place">Explore a location</label>
+            <div class="search-box"><span aria-hidden="true">⌕</span><input id="place" type="search" placeholder="Search a place…" autocomplete="off" aria-controls="place-suggestions" aria-expanded="false" /></div>
+            <div id="place-suggestions" class="suggestions" aria-label="Location results" hidden></div>
+          </div>
+          <div id="park-shortcuts" class="park-shortcuts" role="group" aria-label="Explore park inventories">
+            <details id="park-help" class="park-help">
+              <summary aria-label="Why are these parks listed separately?"><span aria-hidden="true">?</span></summary>
+              <div class="park-help-content">
+                <h2>Why these parks are separate</h2>
+                <p>The BBMP dataset has very few or no tree records inside these parks. That doesn’t mean they have few trees.</p>
+                <p><strong>Cubbon Park</strong> has a separate 2022 survey in a PDF. We show its park and zone summaries, not individual tree locations.</p>
+                <p><strong>Lalbagh:</strong> we haven’t verified a separate tree inventory to display yet.</p>
+              </div>
+            </details>
+          </div>
+          <div class="species-search">
+            <label for="species">Search by species</label>
+            <div class="search-box"><span aria-hidden="true">⌕</span><input id="species" type="search" placeholder="Search a species…" autocomplete="off" aria-controls="suggestions" aria-expanded="false" aria-describedby="search-help" /><button id="clear" aria-label="Clear species search" hidden>×</button></div>
+            <p id="search-help" class="hint">Try neem, mango or a botanical name</p>
+            <div id="suggestions" class="suggestions" aria-label="Species results" hidden></div>
+          </div>
+          <p id="notice" role="status" hidden></p>
+        </section>
+        <section class="results" aria-label="Trees in this area">
+          <div class="section-line"><h2 id="results-title">BBMP records in this map</h2></div>
+          <p id="summary" role="status">Finding the trees…</p>
+          <div id="tree-list"></div>
+        </section>
+        <footer class="data-footer"><p><a id="source" href="https://data.opencity.in/dataset/bengaluru-tree-census-data" target="_blank" rel="noreferrer">BBMP / OpenCity · July 2026 ↗</a></p><button id="about" aria-label="About this data">About the data</button></footer>
+      </aside>
+      <section class="map-section" aria-label="Tree map">
+        <div id="map" aria-label="Interactive map of Bengaluru trees"></div>
+        <button id="near" class="near-button" title="Show trees within 500 m of your current location"><span aria-hidden="true">◎</span> Near me</button>
+        <div class="map-legend"><span class="legend-entry"><span class="dot"></span> BBMP trees</span><span class="legend-entry"><span class="park-swatch"></span> Park information</span></div>
+        <button id="reset" class="reset-button" aria-label="Return to Indiranagar">↖ <span>Reset view</span></button>
+        <article id="detail" class="detail" aria-label="Selected tree" hidden></article>
+        <p id="tile-notice" class="tile-notice" role="status" hidden>Street map unavailable. Tree points still work; check your connection.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a href="https://vipul.xyz/">vipul.xyz ↗</a>
+      <a class="github-link" href="https://github.com/vipul-sharma20/bengaluru-trees" target="_blank" rel="noreferrer" aria-label="View Bengaluru Trees source on GitHub">
+        Source on GitHub ↗
+      </a>
+    </footer>
+    <dialog id="photo-dialog" class="photo-dialog" aria-labelledby="photo-title" aria-describedby="photo-reference">
+      <button class="close-photos" aria-label="Close species photos" autofocus>×</button>
+      <h2 id="photo-title"></h2>
+      <p id="photo-reference">Species reference · not this individual tree</p>
+      <div class="photo-stage">
+        <div class="photo-frame"></div>
+        <button type="button" class="photo-arrow photo-prev" aria-label="Previous photo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 6-6 6 6 6"/></svg>
+        </button>
+        <button type="button" class="photo-arrow photo-next" aria-label="Next photo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="photo-dots" role="group" aria-label="Choose a reference photo"></div>
+      <span class="photo-position" role="status"></span>
+      <details class="photo-credit"></details>
+    </dialog>
+    <dialog id="about-dialog"><button id="close-about" aria-label="Close about dialog">×</button><h2>About the data</h2><p>This map uses the July 2026 BBMP tree census, published by <a href="https://data.opencity.in/" target="_blank" rel="noreferrer">OpenCity</a>. It is a snapshot, not a guarantee that a tree is still there or every tree has been counted.</p><p id="data-note"></p><p>Photographs of trees were not available in the census data. They are sourced from multiple sources and appropriate attribution and license information have been specified. So they are reference images, not photographs of the individual mapped tree or verification of the census identification.</p><p>“Others” means the source does not identify a species. Common names are added search aliases; botanical names are the census labels. Location accuracy can vary, especially between neighbouring trees.</p><p>"Near me" asks for your permission and shows recorded trees within 500 m. Your coordinates are sent only to this app’s server for the lookup, not stored in a database.</p><a href="https://data.opencity.in/dataset/bengaluru-tree-census-data" target="_blank" rel="noreferrer">Explore the original dataset ↗</a></dialog>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

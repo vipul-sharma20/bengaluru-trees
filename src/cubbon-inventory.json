@@ -1,0 +1,43 @@
+{
+  "source": "https://cubbonpark.in/tree-info/assets/report/Tree_Mapping_Report_Cubbon_Park_compressed.pdf",
+  "title": "Sri Chamarajendra Park — Tree Mapping & Inventory Project",
+  "author": "MovingUp Products (P) Ltd (FlippAR)",
+  "submitted": "2022-05-31",
+  "trees": 8866,
+  "species": 196,
+  "summaryPage": 302,
+  "dominantSpeciesPage": 304,
+  "dominantSpecies": [
+    { "name": "Polyalthia longifolia", "count": 489 },
+    { "name": "Peltophorum pterocarpum", "count": 420 },
+    { "name": "Markhamia lutea", "count": 402 },
+    { "name": "Spathodea campanulata", "count": 395 },
+    { "name": "Millettia pinnata", "count": 390 }
+  ],
+  "zones": [
+    { "number": 1, "location": "Near KSLTA", "trees": 532, "page": 240, "dominantSpecies": ["Plumeria rubra", "Spathodea campanulata", "Delonix regia", "Millettia pinnata", "Samanea saman"] },
+    { "number": 2, "location": "Diagonally opposite Sri Chamarajendra Wodeyar’s statue, adjacent to Zone 1", "trees": 147, "page": 243, "dominantSpecies": ["Delonix regia", "Artocarpus heterophyllus", "Caryota urens", "Scheffelera actinophylla", "Albizia odoratissima"] },
+    { "number": 3, "location": "Behind Sri Chamarajendra Wodeyar’s statue, Cubbon Park Bandstand", "trees": 2604, "page": 246, "dominantSpecies": ["Swietenia macrophylla", "Millettia pinnata", "Bauhinia purpurea", "Peltophorum pterocarpum", "Delonix regia"] },
+    { "number": 4, "location": "King Edward VII’s statue, next to Queen’s Road", "trees": 300, "page": 251, "dominantSpecies": ["Polyalthia longifolia", "Swietenia macrophylla", "Millettia pinnata", "Peltophorum pterocarpum", "Syzygium cumini"] },
+    { "number": 5, "location": "Queen Victoria’s statue, opposite Government Aquarium", "trees": 53, "page": 254, "dominantSpecies": ["Delonix regia", "Tabebuia pallida", "Samanea saman", "Araucaria columnaris", "Swietenia macrophylla"] },
+    { "number": 6, "location": "Small triangular park diagonally opposite Karnataka Wine Board", "trees": 17, "page": 257, "dominantSpecies": ["Jacaranda mimosifolia", "Mangifera indica", "Delonix regia"] },
+    { "number": 7, "location": "Right of Hudson Circle Gate, near BWSSB, alongside Kasturba Road", "trees": 1878, "page": 260, "dominantSpecies": ["Samanea saman", "Spathodea campanulata", "Markhamia lutea", "Grevillea robusta", "Millettia pinnata"] },
+    { "number": 8, "location": "Left of Hudson Circle Gate, Fern House", "trees": 1234, "page": 264, "dominantSpecies": ["Markhamia lutea", "Grevillea robusta", "Spathodea campanulata", "Peltophorum pterocarpum", "Eucalyptus globulus"] },
+    { "number": 9, "location": "Karnataka Wine Board", "trees": 65, "page": 267, "dominantSpecies": ["Peltophorum pterocarpum", "Caryota urens", "Bauhinia purpurea", "Lagerstroemia speciosa", "Mangifera indica"] },
+    { "number": 10, "location": "Park opposite Karnataka Wine Board", "trees": 82, "page": 270, "dominantSpecies": ["Peltophorum pterocarpum", "Enterolobium cyclocarpum", "Spathodea campanulata", "Millingtonia hortensis", "Lagerstroemia speciosa"] },
+    { "number": 11, "location": "Jawahar Bal Bhavan", "trees": 648, "page": 273, "dominantSpecies": ["Eucalyptus globulus", "Polyalthia longifolia", "Grevillea robusta", "Peltophorum pterocarpum", "Caryota urens"] },
+    { "number": 12, "location": "Rose Garden", "trees": 42, "page": 276, "dominantSpecies": ["Wodyetia bifurcata"] },
+    { "number": 13, "location": "The Weekend Dog Park", "trees": 81, "page": 279, "dominantSpecies": ["Peltophorum pterocarpum", "Bauhinia purpurea", "Spathodea campanulata", "Caryota urens", "Eucalyptus globulus"] },
+    { "number": 14, "location": "Ringwood Circle Park", "trees": 155, "page": 282, "dominantSpecies": ["Plumeria rubra", "Handroanthus impetiginosus", "Casuarina equisetifolia"] },
+    { "number": 15, "location": "KSLTA, nursery, near the Deputy Director of Horticulture’s office", "trees": 419, "page": 287, "dominantSpecies": ["Grevillea robusta", "Caryota urens", "Delonix regia", "Guazuma ulmifolia", "Samanea saman"] },
+    { "number": 16, "location": "Karnataka State Government Employees Association (KSG Social Club)", "trees": 78, "page": 290, "dominantSpecies": ["Spathodea campanulata", "Samanea saman", "Guazuma ulmifolia"] },
+    { "number": 17, "location": "Seshadri Iyer Memorial Hall (State Central Library)", "trees": 21, "page": 293, "dominantSpecies": ["Wodyetia bifurcata", "Calophyllum inophyllum", "Artocarpus heterophyllus"] },
+    { "number": 18, "location": "Park opposite Karnataka State Government Employees Association (KSG Social Club)", "trees": 313, "page": 296, "dominantSpecies": ["Polyalthia longifolia", "Cassia javanica", "Markhamia lutea", "Spathodea campanulata", "Millettia pinnata"] },
+    { "number": 19, "location": "Karnataka State Secretariat Club", "trees": 30, "page": 299, "dominantSpecies": ["Polyalthia longifolia", "Mangifera indica", "Artocarpus heterophyllus", "Peltophorum pterocarpum", "Cocos nucifera"] }
+  ],
+  "separateAreas": [
+    { "name": "Lotus Pond", "trees": 73, "page": 249 },
+    { "name": "Avenue trees", "trees": 84, "page": 285 }
+  ],
+  "countNote": "The 19 zone counts total 8,699. With the separately listed Lotus Pond (73) and avenue trees (84), they sum to 8,856 — 10 fewer than the report’s headline of 8,866. We preserve the reported figures without reconciling that difference. Kargadhakunte’s inaccessible trees are excluded from the headline; its estimates also differ between report sections."
+}

@@ -1,0 +1,21 @@
+{
+  "name": "bengaluru-trees",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "start": "gunicorn --config gunicorn.conf.py server:app",
+    "data": "python import_data.py",
+    "test": "python -m unittest discover -s tests -v && node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@maplibre/maplibre-gl-leaflet": "^0.1.4",
+    "leaflet": "^1.9.4",
+    "maplibre-gl": "^6.16.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}
