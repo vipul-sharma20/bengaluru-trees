@@ -21,7 +21,7 @@ export function openDialog(dialog) {
   visibleFrame.observe(document.documentElement);
 }
 
-// This channel carries public layout information only; it never accepts commands.
+// This channel carries public layout information only; the parent may request a fresh height.
 export function embedParentOrigin(search) {
   const override = new URLSearchParams(search).get('parentOrigin');
   if (override === null) return 'https://vipul.xyz';
@@ -45,6 +45,7 @@ export function reportEmbedHeight(element) {
   if (!origin) return;
   let lastHeight = 0;
   let timer;
+  let requested = false;
   const schedule = () => {
     if (timer) return;
     // Animation frames can be suspended in an iframe below the article fold.
@@ -52,10 +53,11 @@ export function reportEmbedHeight(element) {
       timer = null;
       // Unlike scrollHeight, this does not grow to fill the iframe's own height.
       const height = Math.ceil(element.getBoundingClientRect().bottom + window.scrollY);
-      if (height > 0 && height !== lastHeight) {
+      if (height > 0 && (requested || height !== lastHeight)) {
         lastHeight = height;
         window.parent.postMessage({ type: 'tree-census:resize', height }, origin);
       }
+      requested = false;
     });
   };
   new ResizeObserver(schedule).observe(element);
@@ -64,5 +66,11 @@ export function reportEmbedHeight(element) {
     subtree: true, childList: true, characterData: true, attributes: true,
   });
   window.addEventListener('resize', schedule);
+  window.addEventListener('message', (event) => {
+    if (event.source !== window.parent || event.origin !== origin
+      || event.data?.type !== 'tree-census:request-resize') return;
+    requested = true;
+    schedule();
+  });
   schedule();
 }

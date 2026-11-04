@@ -33,11 +33,19 @@ On touch devices, one finger scrolls the page; use two fingers to zoom the map.
 The analytics embed sends `{type: 'tree-census:resize', height: <positive integer>}`
 to its parent on initial load and whenever content size or viewport width changes.
 Set the iframe's pixel height from the message. It measures content, not the
-iframe viewport, and only sends changed heights to avoid resize feedback loops.
+iframe viewport, and ordinary notifications only send changed heights to avoid
+resize feedback loops.
 Mark the blog iframe with `data-tree-census-embed="analytics"`. Before applying
 a height, validate `event.origin === new URL(iframe.src).origin`,
 `event.source === iframe.contentWindow`, the message type and a finite positive
-height. No messages are accepted by the app.
+height. After installing or restoring the parent's listener (including after Back),
+request a fresh measurement with
+`iframe.contentWindow.postMessage({type: 'tree-census:request-resize'}, new URL(iframe.src).origin)`.
+The embed accepts this request only from `window.parent` at the configured parent
+origin below. It remeasures on its existing scheduled timer and responds even if
+the height is unchanged; simultaneous requests and observer notifications coalesce.
+Standalone pages, same-window embeds and invalid parent origins install no listener.
+No other message types are accepted, and neither side should use a wildcard target.
 
 The default message target is exactly `https://vipul.xyz`. For an orb or LAN preview,
 append `&parentOrigin=` followed by the URL-encoded parent **origin** (scheme,
@@ -46,8 +54,9 @@ are accepted, with HTTP allowed only for localhost, `127.0.0.1`, `[::1]`, RFC191
 IPv4 (`10/8`, `172.16/12`, `192.168/16`) and IPv6 unique-local (`fc00::/7`) previews.
 For example, use `&parentOrigin=http%3A%2F%2F192.168.1.7%3A3000` for a phone
 viewing a local blog server. An invalid override disables messages. This override
-changes only the exact destination of public height notifications; it grants no
-access or privileged messaging. Public HTTP hosts remain unsupported.
+sets the exact destination of public height notifications and the accepted origin
+for height requests; it grants no access or privileged messaging. Public HTTP
+hosts remain unsupported.
 
 The frontend uses vanilla JavaScript, Vite, Leaflet, MapLibre and D3. A Flask API
 queries a local SQLite R-tree index; Gunicorn and WhiteNoise serve the API and
