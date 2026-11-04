@@ -4,13 +4,13 @@
 .visual-section { border-top: 1px solid var(--border); padding: 30px 0 24px; }
 .visual-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; }
 .visual-heading h2 { font-size: clamp(22px, 2.8vw, 30px); scroll-margin-top: 20px; }
-.visual-heading > div > p:not(.eyebrow) { color: var(--text-secondary); font-size: 13px; margin: 9px 0 0; max-width: 610px; }
 .visual-heading .eyebrow { margin-bottom: 7px; }
 .analytics-control { display: flex; flex-direction: column; flex: none; gap: 5px; }
 .analytics-control label { font-size: 11px; }
 .analytics-control select { font: 14px var(--font-sans); color: var(--text); background: #fafafa; border: 1px solid var(--border); border-radius: 3px; height: 44px; padding: 0 12px; width: 220px; max-width: 100%; }
 .analytics-control select:focus-visible, .chart svg:focus-visible, .analytics-method summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.canopy-layout { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); align-items: center; gap: 60px; padding-top: 18px; }
+.canopy-layout, .canopy-section .visual-heading { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 60px; }
+.canopy-layout { align-items: center; padding-top: 18px; }
 .chart { min-width: 0; }
 .chart svg { display: block; width: 100%; overflow: visible; }
 #canopy-chart svg { max-width: 620px; margin: 0 auto; }
@@ -93,13 +93,14 @@
   .species-key button:hover { text-decoration: underline; text-underline-offset: 4px; }
 }
 @media (max-width: 800px) {
-  .canopy-layout { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; }
+  .canopy-layout, .canopy-section .visual-heading { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; }
   .chart-detail strong { font-size: 19px; }
   .visual-heading { align-items: start; flex-wrap: wrap; }
   .ward-layout { grid-template-columns: 1fr; grid-template-areas: 'map-key' 'detail' 'map' 'scatter-key' 'scatter'; gap: 18px; }
 }
 @media (max-width: 580px) {
   .canopy-layout { grid-template-columns: 1fr; gap: 0; }
+  .canopy-section .visual-heading { grid-template-columns: 1fr; gap: 15px; }
   .canopy-key { padding: 0 6px; }
   .chart-detail { min-height: 95px; }
   .chart-detail strong { font-size: 21px; }

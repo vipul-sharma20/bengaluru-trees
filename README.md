@@ -38,12 +38,15 @@ a height, validate `event.origin === new URL(iframe.src).origin`,
 `event.source === iframe.contentWindow`, the message type and a finite positive
 height. No messages are accepted by the app.
 
-The default message target is exactly `https://vipul.xyz`. For an orb preview,
+The default message target is exactly `https://vipul.xyz`. For an orb or LAN preview,
 append `&parentOrigin=` followed by the URL-encoded parent **origin** (scheme,
 host and optional port; no path, credentials or trailing slash). HTTPS origins
-are accepted, with HTTP allowed only for localhost/loopback testing. An invalid
-override disables messages. This override changes only the destination of public
-height notifications; it grants no access or privileged messaging.
+are accepted, with HTTP allowed only for localhost, `127.0.0.1`, `[::1]`, RFC1918
+IPv4 (`10/8`, `172.16/12`, `192.168/16`) and IPv6 unique-local (`fc00::/7`) previews.
+For example, use `&parentOrigin=http%3A%2F%2F192.168.1.7%3A3000` for a phone
+viewing a local blog server. An invalid override disables messages. This override
+changes only the exact destination of public height notifications; it grants no
+access or privileged messaging. Public HTTP hosts remain unsupported.
 
 The frontend uses vanilla JavaScript, Vite, Leaflet, MapLibre and D3. A Flask API
 queries a local SQLite R-tree index; Gunicorn and WhiteNoise serve the API and

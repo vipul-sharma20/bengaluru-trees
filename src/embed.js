@@ -27,7 +27,13 @@ export function embedParentOrigin(search) {
   if (override === null) return 'https://vipul.xyz';
   try {
     const url = new URL(override);
-    const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+    const [first, second] = url.hostname.split('.').map(Number);
+    const privateIPv4 = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(url.hostname)
+      && (first === 10 || (first === 172 && second >= 16 && second <= 31)
+        || (first === 192 && second === 168));
+    // LAN previews send the same public height notifications as localhost previews.
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)
+      || privateIPv4 || /^\[f[cd][0-9a-f]{2}:/.test(url.hostname);
     if (url.origin === override && (url.protocol === 'https:' || (local && url.protocol === 'http:'))) return url.origin;
   } catch { /* Invalid overrides disable height messages. */ }
   return null;
