@@ -6,6 +6,11 @@ individual census records, and optionally find trees within 500 metres of your
 location. Park summaries and curated species-reference photos provide context
 where the census is incomplete.
 
+Selecting a species keeps the map in place when matching records are visible.
+Otherwise it repositions to cover that species' recorded locations across the
+full census, leaving “Near me” mode if necessary. Moving the map afterwards does
+not trigger another automatic reposition.
+
 The separate `/analytics` page is a visual exploration: a species canopy
 with circle areas proportional to record counts,
 and linked area map and scatter plot using historical boundaries. Hover or use arrow keys for
@@ -146,6 +151,9 @@ The API exposes:
   additionally restricts results to 500 m of that position. Both filters still
   respect the bounding box. Results are nearest-first, capped at 2,000 records,
   with the full matching `total` and the response `limit` included.
+  With `locate=1`, an empty species result also includes `species_bounds` as
+  `[[south, west], [north, east]]` across all records of that species, or `null`
+  if the species has no records. These bounds ignore the bbox and near filters.
 
 ## Docker and hosting
 

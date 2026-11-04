@@ -63,7 +63,13 @@ def query(db, path, params):
     base = f"FROM spatial s JOIN trees t ON t.id=s.id WHERE {where}"
     total = db.execute(f"SELECT count(*) {base}", args).fetchone()[0]
     rows = db.execute(f"SELECT t.*, {DISTANCE_SQL} AS meters {base} ORDER BY meters,t.id LIMIT :limit", args)
-    return {"total": total, "limit": LIMIT, "trees": [dict(row) for row in rows]}
+    result = {"total": total, "limit": LIMIT, "trees": [dict(row) for row in rows]}
+    if not total and species and params.get("locate", [""])[0] == "1":
+        bounds = db.execute(
+            "SELECT min(lat), min(lng), max(lat), max(lng) FROM trees WHERE species = ?",
+            (species,)).fetchone()
+        result["species_bounds"] = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]] if bounds[0] is not None else None
+    return result
 
 
 def create_app(database=DATABASE, dist=ROOT / "dist"):

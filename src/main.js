@@ -232,7 +232,8 @@ function selectTree(tree) {
   if (matchMedia('(pointer: coarse)').matches) detail.scrollIntoView({ block: 'nearest' });
 }
 
-async function loadTrees() {
+async function loadTrees({ locateSpecies = false } = {}) {
+  clearTimeout(timer);
   controller?.abort();
   const active = new AbortController();
   controller = active;
@@ -240,9 +241,19 @@ async function loadTrees() {
   const bounds = map.getBounds();
   const params = new URLSearchParams({ bbox: [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()].join(',') });
   if (selectedSpecies) params.set('species', selectedSpecies);
+  if (locateSpecies) params.set('locate', '1');
   if (near) params.set('near', `${near.lat},${near.lng}`);
   try {
     const result = await request(`/api/trees?${params}`, active.signal);
+    if (active.signal.aborted) return;
+    if (result.species_bounds) {
+      clearLocation();
+      $('#place').value = '';
+      notice('');
+      map.fitBounds(result.species_bounds, { padding: [30, 30], maxZoom: 17, animate: false });
+      scheduleLoad();
+      return;
+    }
     // Resizing the map behind a modal must not dismiss the photo being viewed.
     if (!$('#photo-dialog').open) closeDetail();
     points.clearLayers();
@@ -344,7 +355,7 @@ function showSuggestions() {
       // Focus can open the suggestions again; keep the selected value closed.
       hideSuggestions();
       if (matchMedia('(pointer: coarse)').matches) $('#species').blur();
-      loadTrees();
+      loadTrees({ locateSpecies: true });
     };
     list.append(button);
   }

@@ -79,6 +79,27 @@ class CensusTests(unittest.TestCase):
         self.assertEqual([t['id'] for t in result['trees']], [2, 5, 1])
         self.assertEqual(sum(t['tree_id'] == 'duplicate' for t in result['trees']), 2)
 
+    def test_species_search_locates_only_when_local_results_are_empty(self):
+        client = create_app(self.database, self.dist).test_client()
+        local = '/api/trees?bbox=77.599,12.999,77.6035,13.001'
+        found = client.get(local + '&species=Neem&locate=1').json
+        self.assertEqual(found['total'], 3)
+        self.assertNotIn('species_bounds', found)
+        elsewhere = client.get(local + '&species=Mango&locate=1').json
+        self.assertEqual(elsewhere['trees'], [])
+        self.assertEqual(elsewhere['species_bounds'], [[13.0, 77.604], [13.004, 77.610]])
+        # Manual map exploration must not jump back to the species automatically.
+        self.assertNotIn('species_bounds', client.get(local + '&species=Mango').json)
+        self.assertNotIn('species_bounds', client.get(local + '&locate=1').json)
+        missing = client.get(local + '&species=Absent&locate=1').json
+        self.assertEqual(missing['total'], 0)
+        self.assertIsNone(missing['species_bounds'])
+        # A species beyond the 500 m circle can still be found, even inside the bbox.
+        nearby = client.get('/api/trees?bbox=77.59,12.99,77.62,13.01'
+                            '&near=13,77.6&species=Mango&locate=1').json
+        self.assertEqual(nearby['total'], 0)
+        self.assertEqual(nearby['species_bounds'], elsewhere['species_bounds'])
+
     def test_nearby_uses_circle_not_just_bbox(self):
         result = query(self.db, '/api/trees', {'bbox': ['77.59,12.99,77.62,13.01'], 'near': ['13,77.6']})
         self.assertEqual([t['id'] for t in result['trees']], [1, 2, 5])
@@ -107,6 +128,12 @@ class CensusTests(unittest.TestCase):
         self.assertEqual(head.data, b'')
         self.assertEqual(head.headers['Content-Encoding'], 'gzip')
         self.assertEqual(head.headers['Content-Length'], compressed.headers['Content-Length'])
+        # The full species extent must include points beyond the display limit.
+        self.db.execute('UPDATE trees SET lat=13.02, lng=77.64 WHERE id=2019')
+        self.db.execute('UPDATE spatial SET minx=77.64, maxx=77.64, miny=13.02, maxy=13.02 WHERE id=2019')
+        self.db.commit()
+        located = client.get('/api/trees?bbox=77.7,13.1,77.8,13.2&species=Many&locate=1').json
+        self.assertEqual(located['species_bounds'], [[13, 77.6], [13.02, 77.64]])
 
     def test_nearby_radius_boundary(self):
         # Due north on a 6,371km sphere: one point on either side of 500m.
