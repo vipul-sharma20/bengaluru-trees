@@ -32,7 +32,13 @@
                 <div class="scatter-legend"><span>Unidentified</span><span>0%</span><span class="colour-ramp" aria-hidden="true"></span><span>100%</span></div>
               </div>
               <div id="ward-detail" class="chart-readout" role="status"></div>
-              <div id="ward-map" class="chart" aria-label="Bengaluru areas by recorded tree count"></div>
+              <div id="ward-map" class="chart" aria-label="Bengaluru areas by recorded tree count">
+                <div class="area-map-controls" role="group" aria-label="Area map zoom">
+                  <button id="area-zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+                  <button id="area-zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+                  <button id="area-zoom-reset" type="button" aria-label="Reset area map" title="Reset area map">↺</button>
+                </div>
+              </div>
               <div id="ward-chart" class="chart" aria-label="Area records and species-label scatter plot"></div>
             </div>
             <p class="plot-footnote">Historical boundaries; original census groupings retained. Incomplete survey, not canopy cover or tree density. <a href="https://github.com/datameet/Municipal_Spatial_Data/blob/9b4d1c2ece54cdeb6f5e8bad9ccad7844f783b17/Bangalore/Readme.md" target="_blank" rel="noreferrer">DataMeet</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5/in/" target="_blank" rel="noreferrer">CC BY-SA 2.5 India</a>.</p>

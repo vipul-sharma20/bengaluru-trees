@@ -64,12 +64,23 @@
 .map-key { grid-area: map-key; }
 .scatter-key { grid-area: scatter-key; }
 #ward-detail { grid-area: detail; margin-top: 0; }
-#ward-map { grid-area: map; }
+#ward-map { grid-area: map; position: relative; }
+#ward-map svg { overflow: hidden; cursor: grab; touch-action: none; }
+#ward-map svg:active { cursor: grabbing; }
+.embed-mode #ward-map svg { touch-action: pan-y; }
+.area-map-controls { position: absolute; bottom: 12px; right: 12px; z-index: 1; display: grid; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+.area-map-controls button { width: 44px; height: 44px; border: 0; border-bottom: 1px solid var(--border); background: var(--bg); font-size: 22px; line-height: 1; }
+.area-map-controls button:last-child { border-bottom: 0; }
+.area-map-controls button:hover { background: var(--bg-secondary); }
+.area-map-controls button:focus-visible { outline-offset: -3px; }
+.area-map-controls button:disabled { opacity: .45; cursor: default; }
 #ward-chart { grid-area: scatter; }
-.ward-region { stroke: var(--bg); stroke-width: .7px; cursor: pointer; }
+.ward-region { stroke: var(--bg); stroke-width: .7px; cursor: pointer; vector-effect: non-scaling-stroke; }
+.ward-region:focus:not(:focus-visible) { outline: none; }
 .ward-region.no-records { cursor: default; }
 .ward-region.is-peek, .ward-region.is-selected { stroke: var(--text); stroke-width: 2.5px; }
 .map-labels { font: 10px var(--font-sans); fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; pointer-events: none; }
+.map-labels text { vector-effect: non-scaling-stroke; }
 .no-records-key { width: 12px; height: 12px; background: #e1e2df; border: 1px solid #c5c6c2; margin-left: 8px; }
 .analytics-method { border-top: 1px solid var(--border); padding: 18px 0; scroll-margin-top: 20px; }
 .analytics-method summary { cursor: pointer; color: var(--accent); font-size: 13px; padding: 10px 0; }

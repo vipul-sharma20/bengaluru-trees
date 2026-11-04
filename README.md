@@ -13,6 +13,9 @@ reference-photo previews; click or tap a preview for the existing credited
 photo gallery. Select an area by name on either plot to explore its species. The
 plots aggregate the full imported census, not the map's display limit. Record
 counts describe survey coverage, not canopy cover or greenness.
+The area map supports drag-to-pan, zoom buttons and reset. In an analytics
+embed, use Ctrl/⌘ + scroll or two fingers to zoom; ordinary scrolling moves
+the article instead.
 
 ### Article embeds
 

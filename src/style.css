@@ -61,6 +61,11 @@ input::-webkit-search-cancel-button { display: none; }
 .suggestion:hover, .suggestion:focus-visible { background: var(--bg-secondary); }
 .suggestions > p { font-size: 13px; padding: 12px; }
 .results { overflow: auto; flex: 1; min-height: 100px; padding: 19px 24px 10px; border-top: 1px solid #4a4a4a; }
+.results, #tree-list { scrollbar-width: thin; scrollbar-color: #8a9b8d transparent; }
+.results::-webkit-scrollbar, #tree-list::-webkit-scrollbar { width: 6px; }
+.results::-webkit-scrollbar-track, #tree-list::-webkit-scrollbar-track { background: transparent; }
+.results::-webkit-scrollbar-thumb, #tree-list::-webkit-scrollbar-thumb { background: #8a9b8d; border-radius: 6px; }
+.results::-webkit-scrollbar-thumb:hover, #tree-list::-webkit-scrollbar-thumb:hover { background: var(--garden-evergreen); }
 h2 { font: 600 19px/1.35 var(--font-serif); margin: 0; }
 #summary { color: var(--text-secondary); font-size: 12px; line-height: 1.6; margin: 8px 0 14px; }
 .tree-row { display: flex; align-items: center; width: 100%; background: transparent; border: none; border-top: 1px solid var(--border); text-align: left; padding: 14px 0; gap: 10px; }

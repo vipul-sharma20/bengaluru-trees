@@ -1,10 +1,10 @@
 import { select, hierarchy, pack, scaleLog, scaleLinear, scaleSequential, scaleSequentialSqrt,
-  interpolateRgb, axisBottom, axisLeft, max, geoMercator, geoPath } from 'd3';
+  interpolateRgb, axisBottom, axisLeft, max, geoMercator, geoPath, zoom, zoomIdentity } from 'd3';
 import { prepareCensus } from './analytics-data.js';
 import photoCatalog from './species-photos.json';
 import { openSpeciesPhotos } from './photos.js';
 import wardBoundaries from './ward-boundaries.json';
-import { reportEmbedHeight } from './embed.js';
+import { isEmbedded, reportEmbedHeight } from './embed.js';
 import './style.css';
 import './analytics.css';
 
@@ -235,7 +235,8 @@ function drawWardMap() {
   const tint = scaleSequentialSqrt(interpolateRgb('#e4efdc', '#24543b')).domain([0, highestCount]);
   $('#map-count-max').textContent = number.format(highestCount);
   const wards = new Map(census.wards.map((ward) => [ward.name, ward]));
-  const regions = svg.append('g').selectAll('path').data(wardBoundaries.features).join('path')
+  const view = svg.append('g').attr('class', 'area-map-view');
+  const regions = view.append('g').selectAll('path').data(wardBoundaries.features).join('path')
     .attr('class', 'ward-region').attr('d', path).attr('data-ward-region', (d) => String(d.properties.WARD_NO))
     .attr('fill', (d) => {
       const ward = wards.get(String(d.properties.WARD_NO));
@@ -250,11 +251,35 @@ function drawWardMap() {
     selectAllWards(String(d.properties.WARD_NO));
   });
   const labelled = new Set(width < 400 ? state.ward ? [state.ward] : ['4', '150'] : ['4', '82', '150', '198', state.ward]);
-  svg.append('g').attr('class', 'map-labels').selectAll('text').data(wardBoundaries.features.filter((d) => labelled.has(String(d.properties.WARD_NO))))
+  const labels = view.append('g').attr('class', 'map-labels');
+  labels.selectAll('text').data(wardBoundaries.features.filter((d) => labelled.has(String(d.properties.WARD_NO))))
     .join('text').attr('x', (d) => path.centroid(d)[0]).attr('y', (d) => path.centroid(d)[1])
     .attr('text-anchor', (d) => path.centroid(d)[0] < width / 2 ? 'start' : 'end')
     .text((d) => areaName(String(d.properties.WARD_NO)));
   svg.append('text').attr('class', 'axis-title').attr('x', width - 24).attr('y', 18).text('N ↑');
+  const navigation = zoom().scaleExtent([1, 8])
+    .extent([[0, 0], [width, height]]).translateExtent([[0, 0], [width, height]])
+    .clickDistance(4)
+    .filter((event) => {
+      if (event.button || (event.ctrlKey && event.type !== 'wheel')) return false;
+      // Embedded maps must not intercept ordinary article scrolling.
+      if (isEmbedded && event.type === 'wheel') return event.ctrlKey || event.metaKey;
+      if (isEmbedded && event.type === 'touchstart') return event.touches.length > 1;
+      return true;
+    })
+    .on('zoom', ({ transform }) => {
+      view.attr('transform', transform);
+      labels.style('font-size', `${10 / transform.k}px`);
+      $('#area-zoom-in').disabled = transform.k >= 8;
+      $('#area-zoom-out').disabled = transform.k <= 1;
+      $('#area-zoom-reset').disabled = transform.k <= 1;
+    });
+  // D3 keeps the transform on this SVG, including when a selection redraws it.
+  // Reapply its scale to constrain the pan after a viewport resize.
+  svg.call(navigation).call(navigation.scaleBy, 1);
+  $('#area-zoom-in').onclick = () => svg.call(navigation.scaleBy, 2);
+  $('#area-zoom-out').onclick = () => svg.call(navigation.scaleBy, .5);
+  $('#area-zoom-reset').onclick = () => svg.call(navigation.transform, zoomIdentity);
 }
 
 function render() {
