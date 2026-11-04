@@ -31,12 +31,46 @@ const initialCenter = [12.9783, 77.6395]; // Keep Indiranagar Metro visible in t
 const defaultZoom = () => matchMedia('(max-width: 680px)').matches ? 16 : 17;
 const map = L.map('map', {
   zoomControl: false, preferCanvas: true, minZoom: 10, maxZoom: 20,
-  ...(isEmbedded ? { scrollWheelZoom: false, dragging: !matchMedia('(pointer: coarse)').matches } : {}),
+  ...(isEmbedded ? { dragging: !matchMedia('(pointer: coarse)').matches } : {}),
 }).setView(initialCenter, defaultZoom());
+if (isEmbedded) {
+  const container = map.getContainer();
+  container.addEventListener('wheel', (event) => {
+    // Skip Leaflet's wheel zoom, but keep native article scrolling. Trackpad pinch
+    // arrives as Ctrl+wheel; let Leaflet handle it without resetting its debounce.
+    if (!event.ctrlKey && !event.metaKey) event.stopImmediatePropagation();
+  }, { capture: true, passive: true });
+  let touches = 0;
+  let gesture;
+  for (const type of ['touchstart', 'touchend', 'touchcancel']) {
+    container.addEventListener(type, (event) => { touches = event.touches.length; }, { capture: true, passive: true });
+  }
+  // Safari trackpads also expose GestureEvent. Leave touchscreen pinches to
+  // Leaflet's native TouchZoom rather than processing the same gesture twice.
+  for (const type of ['gesturestart', 'gesturechange', 'gestureend']) {
+    container.addEventListener(type, (event) => {
+      if (touches) { gesture = null; return; }
+      if (type === 'gesturestart') gesture = { zoom: map.getZoom(), point: map.mouseEventToContainerPoint(event) };
+      if (!gesture) return;
+      event.preventDefault();
+      if (type === 'gesturechange') {
+        const zoom = Math.max(map.getMinZoom(), Math.min(map.getMaxZoom(), Math.round(map.getScaleZoom(event.scale, gesture.zoom))));
+        map.setZoomAround(gesture.point, zoom, { animate: false });
+      }
+      if (type === 'gestureend') gesture = null;
+    }, { passive: false });
+  }
+}
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 L.control.scale({ position: 'bottomright', imperial: false }).addTo(map);
 setWorkerUrl(workerUrl);
 try {
+  // Probe WebGL2 before Leaflet attaches the adapter's zoom listeners.
+  const gl = document.createElement('canvas').getContext('webgl2', {
+    alpha: true, depth: true, stencil: true, premultipliedAlpha: true, antialias: false, powerPreference: 'high-performance',
+  });
+  if (!gl) throw new Error('WebGL2 is unavailable');
+  gl.getExtension('WEBGL_lose_context')?.loseContext();
   const tiles = maplibreGL({ style: 'https://tiles.openfreemap.org/styles/liberty' }).addTo(map);
   const basemap = tiles.getMaplibreMap();
   basemap.on('error', () => { $('#tile-notice').hidden = false; });

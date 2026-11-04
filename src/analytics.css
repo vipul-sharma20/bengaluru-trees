@@ -118,3 +118,13 @@
 @media (width < 1000px) {
   .embed-mode .ward-layout { grid-template-columns: 1fr; grid-template-areas: 'map-key' 'detail' 'map' 'scatter-key' 'scatter'; }
 }
+
+/* Compact embeds keep the controls outside the width-limited geographic outline. */
+@media (width < 462px) {
+  .embed-mode .ward-layout { row-gap: 4px; margin-top: 8px; }
+  .embed-mode #ward-detail { min-height: 0; }
+  .embed-mode #ward-map { display: flex; flex-direction: column; gap: 4px; }
+  .embed-mode .area-map-controls { position: static; display: flex; align-self: flex-end; }
+  .embed-mode .area-map-controls button { border-bottom: 0; border-right: 1px solid var(--border); }
+  .embed-mode .area-map-controls button:last-child { border-right: 0; }
+}

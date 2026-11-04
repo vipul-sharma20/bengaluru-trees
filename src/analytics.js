@@ -227,7 +227,8 @@ function selectAllWards(name) {
 
 function drawWardMap() {
   const width = $('#ward-map').clientWidth;
-  const height = width < 580 ? 430 : 460;
+  // Narrow embeds can lose spare canvas height without shrinking the width-limited outline.
+  const height = isEmbedded && width < 430 ? width : width < 580 ? 430 : 460;
   const svg = plot('#ward-map', width, height, 'Bengaluru areas with historical boundaries. Darker green means more recorded trees, on a square-root scale; grey means no records', 'ward-detail');
   const projection = geoMercator().fitExtent([[18, 22], [width - 18, height - 18]], wardBoundaries);
   const path = geoPath(projection);
