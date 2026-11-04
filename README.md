@@ -19,8 +19,11 @@ counts describe survey coverage, not canopy cover or greenness.
 Use `/?embed=1` for the map or `/analytics?embed=1` for analytics. Both hide the
 site navigation and footer while retaining controls, tree details, data sources,
 map attribution and chart methodology. Standalone pages are unchanged. Give the
-map iframe an explicit height (for example 800px on narrow screens): it does not
-auto-resize. Wheel scrolling does not zoom the embedded map; use its zoom buttons.
+map iframe an explicit height (1000px gives the tree list more room): it does not
+auto-resize. The map workspace fits the frame; only its tree list scrolls.
+Outer scrollbar chrome is hidden without clipping content. Analytics still needs
+the height-message handler below to show every plot. Wheel scrolling does not
+zoom the embedded map; use its zoom buttons.
 On touch devices, one finger scrolls the page; use two fingers to zoom the map.
 
 The analytics embed sends `{type: 'tree-census:resize', height: <positive integer>}`

@@ -254,15 +254,22 @@ dialog a { font-size: 14px; }
 }
 
 /* Article embeds keep the explorer and its data attribution, not site chrome. */
-.embed-mode { zoom: 1; --ui-scale: 1; }
+.embed-mode { zoom: 1; --ui-scale: 1; scrollbar-width: none; }
+.embed-mode::-webkit-scrollbar { display: none; }
 .embed-mode .site-nav, .embed-mode .site-footer { display: none; }
-.embed-mode .app { width: 100%; margin: 0; height: 100dvh; min-height: 500px; border: 0; }
+.embed-mode .app { width: 100%; margin: 0; height: 100dvh; min-height: 0; border: 0; }
+.embed-mode .results { display: flex; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+.embed-mode #tree-list { flex: 1; min-height: 0; overflow: auto; }
+.embed-mode .search-section, .embed-mode .data-footer { flex-shrink: 0; }
 .embed-mode .analytics-shell { width: min(1160px, calc(100% - 32px)); }
 .embed-mode dialog { top: var(--embed-visible-top, 0px); bottom: auto; margin: 12px auto; max-height: calc(var(--embed-visible-height, 100dvh) - 24px); }
 @media (pointer: coarse) {
   .embed-mode #map { touch-action: pan-y; }
 }
 @media (max-width: 680px) {
-  .embed-mode .app { height: auto; min-height: 0; }
-  .embed-mode .map-section { height: 320px; }
+  .embed-mode .app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 32dvh) minmax(0, 1fr) auto; grid-template-areas: 'search' 'map' 'results' 'attribution'; }
+  .embed-mode .search-section { grid-area: search; }
+  .embed-mode .map-section { grid-area: map; height: auto; min-height: 0; }
+  .embed-mode .results { grid-area: results; }
+  .embed-mode .data-footer { grid-area: attribution; }
 }
