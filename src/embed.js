@@ -37,11 +37,12 @@ export function reportEmbedHeight(element) {
   const origin = embedParentOrigin(window.location.search);
   if (!origin) return;
   let lastHeight = 0;
-  let frame;
+  let timer;
   const schedule = () => {
-    if (frame) return;
-    frame = requestAnimationFrame(() => {
-      frame = null;
+    if (timer) return;
+    // Animation frames can be suspended in an iframe below the article fold.
+    timer = setTimeout(() => {
+      timer = null;
       // Unlike scrollHeight, this does not grow to fill the iframe's own height.
       const height = Math.ceil(element.getBoundingClientRect().bottom + window.scrollY);
       if (height > 0 && height !== lastHeight) {
@@ -51,6 +52,10 @@ export function reportEmbedHeight(element) {
     });
   };
   new ResizeObserver(schedule).observe(element);
+  // Offscreen frames can also defer ResizeObserver delivery after async content loads.
+  new MutationObserver(schedule).observe(element, {
+    subtree: true, childList: true, characterData: true, attributes: true,
+  });
   window.addEventListener('resize', schedule);
   schedule();
 }

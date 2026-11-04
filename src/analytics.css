@@ -102,3 +102,6 @@
   .chart-readout { min-height: 85px; gap: 4px; flex-direction: column; }
   .chart-readout small { flex-basis: auto; }
 }
+
+/* In an article, each plot follows the previous one at every width. */
+.embed-mode .ward-layout { grid-template-columns: 1fr; grid-template-areas: 'map-key' 'detail' 'map' 'scatter-key' 'scatter'; }
