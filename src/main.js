@@ -8,6 +8,7 @@ import './style.css';
 import { BENGALURU_BOUNDS, searchPlaces } from './places.js';
 import { attachSpeciesPhotos, closeSpeciesPhotos } from './photos.js';
 import { attachParks } from './parks.js';
+import { isEmbedded } from './embed.js';
 
 const $ = (selector) => document.querySelector(selector);
 const format = new Intl.NumberFormat('en-IN');
@@ -28,7 +29,10 @@ const commonName = (species) => aliases[species] || (species === 'Others' ? 'Uni
 const escape = (text) => String(text).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const initialCenter = [12.9783, 77.6395]; // Keep Indiranagar Metro visible in the opening view.
 const defaultZoom = () => matchMedia('(max-width: 680px)').matches ? 16 : 17;
-const map = L.map('map', { zoomControl: false, preferCanvas: true, minZoom: 10, maxZoom: 20 }).setView(initialCenter, defaultZoom());
+const map = L.map('map', {
+  zoomControl: false, preferCanvas: true, minZoom: 10, maxZoom: 20,
+  ...(isEmbedded ? { scrollWheelZoom: false, dragging: !matchMedia('(pointer: coarse)').matches } : {}),
+}).setView(initialCenter, defaultZoom());
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 L.control.scale({ position: 'bottomright', imperial: false }).addTo(map);
 setWorkerUrl(workerUrl);

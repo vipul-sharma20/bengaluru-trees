@@ -252,3 +252,17 @@ dialog a { font-size: 14px; }
   .park-dialog h2 { font-size: 24px; }
   .park-stats strong { font-size: 24px; }
 }
+
+/* Article embeds keep the explorer and its data attribution, not site chrome. */
+.embed-mode { zoom: 1; --ui-scale: 1; }
+.embed-mode .site-nav, .embed-mode .site-footer { display: none; }
+.embed-mode .app { width: 100%; margin: 0; height: 100dvh; min-height: 500px; border: 0; }
+.embed-mode .analytics-shell { width: min(1160px, calc(100% - 32px)); }
+.embed-mode dialog { top: var(--embed-visible-top, 0px); bottom: auto; margin: 12px auto; max-height: calc(var(--embed-visible-height, 100dvh) - 24px); }
+@media (pointer: coarse) {
+  .embed-mode #map { touch-action: pan-y; }
+}
+@media (max-width: 680px) {
+  .embed-mode .app { height: auto; min-height: 0; }
+  .embed-mode .map-section { height: 320px; }
+}

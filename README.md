@@ -14,6 +14,31 @@ photo gallery. Select an area by name on either plot to explore its species. The
 plots aggregate the full imported census, not the map's display limit. Record
 counts describe survey coverage, not canopy cover or greenness.
 
+### Article embeds
+
+Use `/?embed=1` for the map or `/analytics?embed=1` for analytics. Both hide the
+site navigation and footer while retaining controls, tree details, data sources,
+map attribution and chart methodology. Standalone pages are unchanged. Give the
+map iframe an explicit height (for example 800px on narrow screens): it does not
+auto-resize. Wheel scrolling does not zoom the embedded map; use its zoom buttons.
+On touch devices, one finger scrolls the page; use two fingers to zoom the map.
+
+The analytics embed sends `{type: 'tree-census:resize', height: <positive integer>}`
+to its parent on initial load and whenever content size or viewport width changes.
+Set the iframe's pixel height from the message. It measures content, not the
+iframe viewport, and only sends changed heights to avoid resize feedback loops.
+Mark the blog iframe with `data-tree-census-embed="analytics"`. Before applying
+a height, validate `event.origin === new URL(iframe.src).origin`,
+`event.source === iframe.contentWindow`, the message type and a finite positive
+height. No messages are accepted by the app.
+
+The default message target is exactly `https://vipul.xyz`. For an orb preview,
+append `&parentOrigin=` followed by the URL-encoded parent **origin** (scheme,
+host and optional port; no path, credentials or trailing slash). HTTPS origins
+are accepted, with HTTP allowed only for localhost/loopback testing. An invalid
+override disables messages. This override changes only the destination of public
+height notifications; it grants no access or privileged messaging.
+
 The frontend uses vanilla JavaScript, Vite, Leaflet, MapLibre and D3. A Flask API
 queries a local SQLite R-tree index; Gunicorn and WhiteNoise serve the API and
 built frontend from the same origin. No accounts or API keys are required.

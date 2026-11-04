@@ -4,6 +4,7 @@ import { prepareCensus } from './analytics-data.js';
 import photoCatalog from './species-photos.json';
 import { openSpeciesPhotos } from './photos.js';
 import wardBoundaries from './ward-boundaries.json';
+import { reportEmbedHeight } from './embed.js';
 import './style.css';
 import './analytics.css';
 
@@ -302,4 +303,5 @@ const observer = new ResizeObserver(([entry]) => {
   }
 });
 observer.observe($('.analytics-shell'));
+reportEmbedHeight($('.analytics-shell'));
 load();
