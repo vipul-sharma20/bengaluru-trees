@@ -1,4 +1,5 @@
 import catalog from './species-photos.json';
+import { openDialog } from './embed.js';
 
 const dialog = document.querySelector('#photo-dialog');
 const frame = dialog.querySelector('.photo-frame');
@@ -101,7 +102,7 @@ export function openSpeciesPhotos(species, button, name = species) {
   dialog.querySelectorAll('.photo-arrow').forEach((arrow) => { arrow.hidden = photos.length < 2; });
   dots.hidden = photos.length < 2;
   showPhoto(0);
-  dialog.showModal();
+  openDialog(dialog);
 }
 
 export function attachSpeciesPhotos(detail, species, name) {

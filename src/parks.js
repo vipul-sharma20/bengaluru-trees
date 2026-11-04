@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import boundaries from './park-boundaries.json';
 import inventory from './cubbon-inventory.json';
+import { openDialog } from './embed.js';
 
 const format = new Intl.NumberFormat('en-IN');
 const reportLink = (page, label) => `<a href="${inventory.source}#page=${page}" target="_blank" rel="noreferrer">${label} ↗</a>`;
@@ -57,7 +58,7 @@ export function attachParks(map, onNavigate) {
       select.onchange = showZone;
       showZone();
     }
-    dialog.showModal();
+    openDialog(dialog);
     dialog.scrollTop = 0;
   }
 

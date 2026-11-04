@@ -8,7 +8,7 @@ import './style.css';
 import { BENGALURU_BOUNDS, searchPlaces } from './places.js';
 import { attachSpeciesPhotos, closeSpeciesPhotos } from './photos.js';
 import { attachParks } from './parks.js';
-import { isEmbedded } from './embed.js';
+import { isEmbedded, openDialog } from './embed.js';
 
 const $ = (selector) => document.querySelector(selector);
 const format = new Intl.NumberFormat('en-IN');
@@ -407,10 +407,10 @@ $('#reset').onclick = () => {
   map.setView(initialCenter, defaultZoom());
   scheduleLoad();
 };
-$('#about').onclick = () => $('#about-dialog').showModal();
+$('#about').onclick = () => openDialog($('#about-dialog'));
 $('.method-link').onclick = (event) => {
   event.preventDefault();
-  $('#about-dialog').showModal();
+  openDialog($('#about-dialog'));
 };
 $('#close-about').onclick = () => $('#about-dialog').close();
 $('#about-dialog').addEventListener('click', (event) => {

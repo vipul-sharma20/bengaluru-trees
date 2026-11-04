@@ -1,23 +1,24 @@
 export const isEmbedded = typeof window !== 'undefined'
   && new URLSearchParams(window.location.search).get('embed') === '1';
 
-if (isEmbedded) {
-  document.documentElement.classList.add('embed-mode');
-  // A tall iframe can be partly outside the article viewport when a dialog opens.
-  new MutationObserver((changes) => {
-    for (const { target } of changes) {
-      if (!(target instanceof HTMLDialogElement) || !target.open) continue;
-      const visibleFrame = new IntersectionObserver(([entry]) => {
-        const { top, height } = entry.intersectionRect;
-        if (height > 0) {
-          document.documentElement.style.setProperty('--embed-visible-top', `${Math.max(0, top)}px`);
-          document.documentElement.style.setProperty('--embed-visible-height', `${height}px`);
-        }
-        visibleFrame.disconnect();
-      });
-      visibleFrame.observe(document.documentElement);
+if (isEmbedded) document.documentElement.classList.add('embed-mode');
+
+export function openDialog(dialog) {
+  if (!isEmbedded) {
+    dialog.showModal();
+    return;
+  }
+  // Position in the article's visible slice before native autofocus can scroll it.
+  const visibleFrame = new IntersectionObserver(([entry]) => {
+    visibleFrame.disconnect();
+    const { top, height } = entry.intersectionRect;
+    if (height > 0) {
+      document.documentElement.style.setProperty('--embed-visible-top', `${Math.max(0, top)}px`);
+      document.documentElement.style.setProperty('--embed-visible-height', `${height}px`);
     }
-  }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+    dialog.showModal();
+  });
+  visibleFrame.observe(document.documentElement);
 }
 
 // This channel carries public layout information only; it never accepts commands.
