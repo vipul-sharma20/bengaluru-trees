@@ -79,7 +79,7 @@ function plot(selector, width, height, label, describedBy) {
 }
 
 // A single keyboard stop per plot; every mark remains available with arrow keys.
-function explore(svg, marks, describe, activate) {
+function explore(svg, marks, describe, activate, clear) {
   let index = 0;
   const nodes = marks.nodes();
   const show = (node) => {
@@ -103,31 +103,25 @@ function explore(svg, marks, describe, activate) {
       event.preventDefault();
       activate(select(nodes[index]).datum());
     } else if (event.key === 'Escape') {
-      clearSelection();
+      clear();
     }
   });
 }
 
 function selectSpecies(name) {
   state.species = state.species === name ? null : name;
-  render();
+  drawCanopy();
 }
 
 function selectWard(name) {
   state.ward = name;
-  $('#ward-filter').value = name;
-  render();
-}
-
-function clearSelection() {
-  state.ward = '';
-  state.species = null;
-  $('#ward-filter').value = '';
-  render();
+  drawWardMap();
+  drawWards();
 }
 
 function drawCanopy() {
-  const scope = census.wards.find((ward) => ward.name === state.ward) || census.city;
+  const ward = $('#ward-filter').value;
+  const scope = census.wards.find((item) => item.name === ward) || census.city;
   const width = $('#canopy-chart').clientWidth;
   const size = Math.min(width, 620);
   const svg = plot('#canopy-chart', size, size, 'Species canopy. Circle area represents record count', 'canopy-detail');
@@ -159,12 +153,12 @@ function drawCanopy() {
       `${number.format(d.value)} records · ${share(d.value, scope.total)}`);
     showReference('#canopy-photo', d.data.name);
   };
-  explore(svg, groups, describe, (d) => selectSpecies(d.data.name));
+  explore(svg, groups, describe, (d) => selectSpecies(d.data.name), () => selectSpecies(null));
   const initial = leaves.find((d) => d.data.name === state.species) || leaves.find((d) => d.data.name !== 'Others') || leaves[0];
   if (initial) describe(initial);
   else readout('#canopy-detail', 'No census records', 'There are no records to draw.');
   svg.on('pointerleave', () => { if (state.species && initial) describe(initial); });
-  $('#scope-caption').textContent = `${state.ward ? areaName(state.ward) : 'All areas'} · ${scope.richness} identified labels`;
+  $('#scope-caption').textContent = `${ward ? areaName(ward) : 'All areas'} · ${scope.richness} identified labels`;
   $('#clear-species').hidden = state.species === null;
   const key = select('#species-key').selectAll('button').data(scope.species.filter((d) => d.name !== 'Others').slice(0, 5), (d) => d.name)
     .join('button').attr('type', 'button').attr('aria-pressed', (d) => d.name === state.species)
@@ -207,7 +201,7 @@ function drawWards() {
     .attr('class', 'ward-annotation').attr('x', (d) => x(d.total) + (x(d.total) < 140 ? 9 : -9))
     .attr('y', (d) => y(d.richness) + (narrow && d.name === census.wards[0]?.name ? 20 : -10))
     .attr('text-anchor', (d) => x(d.total) < 140 ? 'start' : 'end').text((d) => areaName(d.name));
-  explore(svg, marks, describeWard, (d) => selectWard(d.name));
+  explore(svg, marks, describeWard, (d) => selectWard(d.name), () => selectWard(''));
   const initial = census.wards.find((d) => d.name === state.ward) || [...census.wards].sort((a, b) => b.richness - a.richness)[0];
   if (initial) describeWard(initial);
   else readout('#ward-detail', 'No areas', 'No records to compare.');
@@ -246,7 +240,8 @@ function drawWardMap() {
     .classed('no-records', (d) => !wards.has(String(d.properties.WARD_NO)))
     .attr('aria-label', (d) => `${areaName(String(d.properties.WARD_NO))}${wards.has(String(d.properties.WARD_NO)) ? '' : ': no records in this snapshot'}`);
   explore(svg, regions.filter((d) => wards.has(String(d.properties.WARD_NO))),
-    (d) => describeWard(wards.get(String(d.properties.WARD_NO))), (d) => selectWard(String(d.properties.WARD_NO)));
+    (d) => describeWard(wards.get(String(d.properties.WARD_NO))),
+    (d) => selectWard(String(d.properties.WARD_NO)), () => selectWard(''));
   regions.filter((d) => !wards.has(String(d.properties.WARD_NO))).attr('role', 'img').on('pointerenter', (_, d) => {
     readout('#ward-detail', areaName(String(d.properties.WARD_NO)), 'No records in this census snapshot', 'This does not mean there are no trees here. Historical reference outline.');
     selectAllWards(String(d.properties.WARD_NO));
@@ -317,8 +312,8 @@ async function load() {
   }
 }
 
-$('#ward-filter').addEventListener('change', () => selectWard($('#ward-filter').value));
-$('#clear-species').addEventListener('click', () => { state.species = null; render(); });
+$('#ward-filter').addEventListener('change', drawCanopy);
+$('#clear-species').addEventListener('click', () => selectSpecies(null));
 $('#analytics-retry').addEventListener('click', load);
 $('.method-link').addEventListener('click', () => { $('#method').open = true; });
 let plotWidth = 0;

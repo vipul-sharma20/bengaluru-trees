@@ -10,7 +10,8 @@ The separate `/analytics` page is a visual exploration: a species canopy
 with circle areas proportional to record counts,
 and linked area map and scatter plot using historical boundaries. Hover or use arrow keys for
 reference-photo previews; click or tap a preview for the existing credited
-photo gallery. Select an area by name on either plot to explore its species. The
+photo gallery. The species chart defaults to all areas; use its Area dropdown
+to filter it explicitly. Map and area-scatter selections do not change that filter. The
 plots aggregate the full imported census, not the map's display limit. Record
 counts describe survey coverage, not canopy cover or greenness.
 The area map supports drag-to-pan, zoom buttons and reset. In an analytics
