@@ -6,7 +6,15 @@ individual census records, and optionally find trees within 500 metres of your
 location. Park summaries and curated species-reference photos provide context
 where the census is incomplete.
 
-The frontend uses vanilla JavaScript, Vite, Leaflet and MapLibre. A Flask API
+The separate `/analytics.html` page is a visual exploration: a species canopy
+with circle areas proportional to record counts,
+and linked area map and scatter plot using historical boundaries. Hover or use arrow keys for
+reference-photo previews; click or tap a preview for the existing credited
+photo gallery. Select an area by name on either plot to explore its species. The
+plots aggregate the full imported census, not the map's display limit. Record
+counts describe survey coverage, not canopy cover or greenness.
+
+The frontend uses vanilla JavaScript, Vite, Leaflet, MapLibre and D3. A Flask API
 queries a local SQLite R-tree index; Gunicorn and WhiteNoise serve the API and
 built frontend from the same origin. No accounts or API keys are required.
 
@@ -71,6 +79,10 @@ There is no hot-reload or separate frontend dev-server/API proxy setup.
 | Path | Responsibility |
 | --- | --- |
 | `src/main.js`, `src/style.css`, `index.html` | Map, search, tree details and page layout |
+| `analytics.html`, `src/analytics.js`, `src/analytics.css` | Separate census analytics page |
+| `src/analytics-data.js` | Census summaries and complete ward–species grouping for plots |
+| `src/ward-boundaries.json` | Unchanged DataMeet historical 198-ward reference geometry and names |
+| `vite.config.js` | Builds both map and analytics entry points |
 | `src/places.js` | Bengaluru place autocomplete via Photon |
 | `src/parks.js`, `src/*inventory.json`, `src/park-boundaries.json` | Park overlays, summaries and source data |
 | `src/photos.js`, `src/species-photos.json` | Photo viewer, reference images and attribution |
@@ -83,6 +95,8 @@ The API exposes:
 
 - `GET /healthz`: database/catalog and built-entry-point health check.
 - `GET /api/catalog`: census metadata and species counts.
+- `GET /api/analytics`: census metadata and complete species counts grouped by
+  source ward. Cached per worker; replacing the database requires a restart.
 - `GET /api/trees?bbox=west,south,east,north`: matching trees in a bounding box.
   Optional `species` matches an exact census label; optional `near=lat,lng`
   additionally restricts results to 500 m of that position. Both filters still
@@ -148,6 +162,27 @@ This is a survey snapshot, not a complete or current inventory of every tree.
 Species and ward names are source labels, not verified taxonomy or current ward
 boundaries. “Others” means unidentified. Common-name search aliases do not
 change the underlying census labels.
+
+### Historical ward context
+
+Analytics uses DataMeet India community's
+[Bangalore Ward Maps 2012](https://github.com/datameet/Municipal_Spatial_Data/blob/9b4d1c2ece54cdeb6f5e8bad9ccad7844f783b17/Bangalore/Readme.md),
+not its newer 243-ward file. `src/ward-boundaries.json` is an unchanged copy of
+[`BBMP_oldWards.geojson`](https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/9b4d1c2ece54cdeb6f5e8bad9ccad7844f783b17/Bangalore/BBMP_oldWards.geojson)
+(SHA-256 `06263e1a1e72fc58844a635c0b95e490962321e8489b476f2379771ce5128633`).
+The Bangalore-specific license is
+[CC BY-SA 2.5 India](https://creativecommons.org/licenses/by-sa/2.5/in/),
+not the repository's default license. Preserve its attribution and share-alike
+terms when redistributing or adapting this boundary dataset.
+
+Names join `WARD_NO` to the original census ward tag. All 144 recorded ward
+numbers exist in the historical reference. Full-census spatial validation found
+673,210 points inside the same-number outline, 20,759 inside another outline,
+and 7,047 outside all outlines (96.03% agreement). These are historical names
+and reference outlines, not authoritative current or July 2026 survey
+boundaries. Disagreement causes are unverified; no census records are reassigned.
+Colour uses source-tagged counts, not a spatial recount. The other 54 wards
+are marked as having no records in this snapshot, never as having no trees.
 
 ### Park context
 

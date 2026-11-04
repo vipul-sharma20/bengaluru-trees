@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f1f1f1" />
+    <meta name="description" content="Bengaluru tree census plots by area and species, with species reference photos." />
+    <title>Tree census · Analytics</title>
+  </head>
+  <body class="analytics-page">
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="wordmark" href="/">Bengaluru trees</a>
+      <div><a href="/">Map</a><a href="/analytics.html" aria-current="page">Analytics</a></div>
+    </nav>
+    <div class="analytics-shell">
+      <main aria-label="Census analytics">
+        <p id="analytics-status" role="status">Drawing the census…</p>
+        <button id="analytics-retry" class="analytics-button" hidden>Try again</button>
+        <noscript><p>Enable JavaScript to explore the visualizations.</p></noscript>
+        <div id="analytics-content" hidden>
+          <section class="visual-section" aria-labelledby="wards-title">
+            <div class="visual-heading">
+              <div><h2 id="wards-title">Tree records by area</h2></div>
+              <a class="text-button" href="#canopy-title">Species ↓</a>
+            </div>
+            <div class="ward-layout">
+              <div class="map-key">
+                <p class="eyebrow">Area map · historical boundaries</p>
+                <div class="scatter-legend"><span>Recorded trees</span><span>0</span><span class="colour-ramp tree-count-ramp" aria-hidden="true"></span><span id="map-count-max"></span><span class="no-records-key" aria-hidden="true"></span><span>No records</span></div>
+              </div>
+              <div class="scatter-key">
+                <p class="eyebrow">Recorded trees vs. identified species labels</p>
+                <div class="scatter-legend"><span>Unidentified</span><span>0%</span><span class="colour-ramp" aria-hidden="true"></span><span>100%</span></div>
+              </div>
+              <div id="ward-detail" class="chart-readout" role="status"></div>
+              <div id="ward-map" class="chart" aria-label="Bengaluru areas by recorded tree count"></div>
+              <div id="ward-chart" class="chart" aria-label="Area records and species-label scatter plot"></div>
+            </div>
+            <p class="plot-footnote">Historical boundaries; original census groupings retained. Incomplete survey, not canopy cover or tree density. <a href="https://github.com/datameet/Municipal_Spatial_Data/blob/9b4d1c2ece54cdeb6f5e8bad9ccad7844f783b17/Bangalore/Readme.md" target="_blank" rel="noreferrer">DataMeet</a> · <a href="https://creativecommons.org/licenses/by-sa/2.5/in/" target="_blank" rel="noreferrer">CC BY-SA 2.5 India</a>.</p>
+          </section>
+          <section class="visual-section canopy-section" aria-labelledby="canopy-title">
+            <div class="visual-heading">
+              <div><h2 id="canopy-title">Tree records by species</h2><p>Circle area = records · hatched = unidentified.</p></div>
+              <div class="analytics-control"><label for="ward-filter">Area</label><select id="ward-filter"><option value="">All areas</option></select></div>
+            </div>
+            <div class="canopy-layout">
+              <div id="canopy-chart" class="chart" aria-label="Species circle-packing chart"></div>
+              <div class="canopy-key">
+                <p id="scope-caption" class="scope-caption">All areas</p>
+                <div id="canopy-detail" class="chart-detail" role="status"></div>
+                <figure id="canopy-photo" class="reference-preview"></figure>
+                <div id="species-key" class="species-key" aria-label="Species colour key"></div>
+                <button id="clear-species" class="text-button" hidden>Clear species selection ×</button>
+                <p class="chart-hint">Hover / arrow keys: preview · select: pin · photo: gallery</p>
+              </div>
+            </div>
+          </section>
+          <details id="method" class="analytics-method">
+            <summary>Data &amp; sources</summary>
+            <p id="method-description"></p>
+            <p>Darker green means more recorded trees, not more tree cover. The census doesn’t include every tree in Bengaluru, so grey areas mean no records, not no trees.</p>
+            <p>Area names and outlines come from <a href="https://github.com/datameet/Municipal_Spatial_Data/blob/9b4d1c2ece54cdeb6f5e8bad9ccad7844f783b17/Bangalore/Readme.md" target="_blank" rel="noreferrer">DataMeet’s 2012 Bangalore maps</a>. They aren’t current boundaries and don’t always line up with census locations. Trees stay grouped as they were in the census.</p>
+            <p>Species names come from the census; “Others” means unidentified. Photos show examples of each species, not the surveyed trees. Credits are listed with each photo.</p>
+            <a id="analytics-source" href="https://data.opencity.in/dataset/bengaluru-tree-census-data" target="_blank" rel="noreferrer">BBMP census via OpenCity ↗</a>
+          </details>
+        </div>
+      </main>
+    </div>
+    <footer class="site-footer">
+      <a href="https://vipul.xyz/">vipul.xyz ↗</a>
+      <a class="github-link" href="https://github.com/vipul-sharma20/bengaluru-trees" target="_blank" rel="noreferrer" aria-label="View Bengaluru Trees source on GitHub">Source on GitHub ↗</a>
+      <a class="method-link" href="#method">Data &amp; sources</a>
+    </footer>
+    <dialog id="photo-dialog" class="photo-dialog" aria-labelledby="photo-title" aria-describedby="photo-reference">
+      <button class="close-photos" aria-label="Close species photos" autofocus>×</button>
+      <h2 id="photo-title"></h2>
+      <p id="photo-reference">Species reference · not this individual tree</p>
+      <div class="photo-stage">
+        <div class="photo-frame"></div>
+        <button type="button" class="photo-arrow photo-prev" aria-label="Previous photo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 6-6 6 6 6"/></svg>
+        </button>
+        <button type="button" class="photo-arrow photo-next" aria-label="Next photo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="photo-dots" role="group" aria-label="Choose a reference photo"></div>
+      <span class="photo-position" role="status"></span>
+      <details class="photo-credit"></details>
+    </dialog>
+    <script type="module" src="/src/analytics.js"></script>
+  </body>
+</html>

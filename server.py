@@ -28,6 +28,14 @@ def query(db, path, params):
         species = [{"name": name, "count": count} for name, count in db.execute(
             "SELECT species, count(*) FROM trees GROUP BY species ORDER BY species COLLATE NOCASE")]
         return {"metadata": metadata, "species": species}
+    if path == "/api/analytics":
+        metadata = json.loads(db.execute("SELECT json FROM metadata").fetchone()[0])
+        wards = {}
+        for ward, species, count in db.execute(
+                "SELECT ward, species, count(*) FROM trees GROUP BY ward, species ORDER BY ward, species"):
+            wards.setdefault(ward, []).append({"name": species, "count": count})
+        return {"metadata": metadata, "wards": [
+            {"name": ward, "species": species} for ward, species in wards.items()]}
     if path != "/api/trees":
         raise LookupError("Unknown endpoint")
     try:
@@ -75,6 +83,10 @@ def create_app(database=DATABASE, dist=ROOT / "dist"):
         # The database is a release artifact. Replacing it requires a worker restart.
         return run_query("/api/catalog", {})
 
+    @cache
+    def analytics():
+        return run_query("/api/analytics", {})
+
     @app.get("/healthz")
     def health():
         try:
@@ -88,8 +100,12 @@ def create_app(database=DATABASE, dist=ROOT / "dist"):
     @app.get("/api/<path:endpoint>")
     def api(endpoint):
         try:
-            result = catalog() if endpoint == "catalog" else run_query(
-                f"/api/{endpoint}", request.args.to_dict(flat=False))
+            if endpoint == "catalog":
+                result = catalog()
+            elif endpoint == "analytics":
+                result = analytics()
+            else:
+                result = run_query(f"/api/{endpoint}", request.args.to_dict(flat=False))
             return jsonify(result)
         except ValueError as error:
             return jsonify(error=str(error)), 400

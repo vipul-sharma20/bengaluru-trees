@@ -82,7 +82,9 @@ function showPhoto(next) {
   credit.replaceChildren(summary, attribution, provenance);
 }
 
-function openPhotos(entry, button, name) {
+export function openSpeciesPhotos(species, button, name = species) {
+  const entry = catalog[species];
+  if (!entry?.photos.length) return;
   photos = entry.photos;
   trigger = button;
   dialog.querySelector('h2').textContent = name;
@@ -122,7 +124,7 @@ export function attachSpeciesPhotos(detail, species, name) {
   count.className = 'photo-entry-count';
   count.textContent = `${entry.photos.length} ↗`;
   button.append(thumbnail, label, count);
-  button.onclick = () => openPhotos(entry, button, name);
+  button.onclick = () => openSpeciesPhotos(species, button, name);
   detail.querySelector('.detail-meta').before(button);
 }
 

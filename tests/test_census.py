@@ -51,6 +51,27 @@ class CensusTests(unittest.TestCase):
         self.assertEqual(result['metadata']['excluded'], 1)
         self.assertEqual(result['species'], [{'name': 'Mango', 'count': 2}, {'name': 'Neem', 'count': 3}])
 
+    def test_analytics_groups_full_census_by_ward_and_species(self):
+        self.db.executemany('INSERT INTO trees VALUES (?,?,?,?,?,?)', [
+            (i, 'duplicate', 'Others', '9', 77.6, 13) for i in range(10, 2021)])
+        self.db.execute('INSERT INTO trees VALUES (?,?,?,?,?,?)',
+                        (2021, 'another', 'Neem', '9', 77.6, 13))
+        self.db.commit()
+        response = create_app(self.database, self.dist).test_client().get('/api/analytics')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertEqual(response.json['metadata']['release'], 'July 2026')
+        self.assertEqual(response.json['wards'], [
+            {'name': '8', 'species': [{'name': 'Mango', 'count': 2}, {'name': 'Neem', 'count': 3}]},
+            {'name': '9', 'species': [{'name': 'Neem', 'count': 1}, {'name': 'Others', 'count': 2011}]},
+        ])
+        empty = Path(self.temp.name) / 'empty.sqlite'
+        with zipfile.ZipFile(Path(self.temp.name) / 'empty.zip', 'w') as archive:
+            archive.writestr('empty.geojson', '{"features": []}')
+        import_census(Path(self.temp.name) / 'empty.zip', empty)
+        result = create_app(empty, self.dist).test_client().get('/api/analytics')
+        self.assertEqual(result.json['wards'], [])
+
     def test_bbox_species_order_and_duplicate_ids(self):
         result = query(self.db, '/api/trees', {'bbox': ['77.599,12.999,77.6035,13.001'], 'species': ['Neem']})
         self.assertEqual(result['total'], 3)

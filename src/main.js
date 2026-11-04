@@ -404,6 +404,10 @@ $('#reset').onclick = () => {
   scheduleLoad();
 };
 $('#about').onclick = () => $('#about-dialog').showModal();
+$('.method-link').onclick = (event) => {
+  event.preventDefault();
+  $('#about-dialog').showModal();
+};
 $('#close-about').onclick = () => $('#about-dialog').close();
 $('#about-dialog').addEventListener('click', (event) => {
   if (event.target === $('#about-dialog')) {

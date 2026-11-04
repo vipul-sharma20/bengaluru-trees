@@ -28,12 +28,12 @@
     </script>
   </head>
   <body>
-    <main class="app">
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="wordmark" href="/">Bengaluru trees</a>
+      <div><a href="/" aria-current="page">Map</a><a href="/analytics.html">Analytics</a></div>
+    </nav>
+    <main class="app" aria-label="Tree map explorer">
       <aside class="sidebar" aria-label="Tree explorer">
-        <header>
-          <h1>Bengaluru trees</h1>
-          <p class="intro">Find out what’s growing around you. Explore the city’s tree census.</p>
-        </header>
         <section class="search-section" aria-label="Find trees">
           <div class="place-search">
             <label for="place">Explore a location</label>
@@ -80,6 +80,7 @@
       <a class="github-link" href="https://github.com/vipul-sharma20/bengaluru-trees" target="_blank" rel="noreferrer" aria-label="View Bengaluru Trees source on GitHub">
         Source on GitHub ↗
       </a>
+      <a class="method-link" href="#about-dialog">Data &amp; sources</a>
     </footer>
     <dialog id="photo-dialog" class="photo-dialog" aria-labelledby="photo-title" aria-describedby="photo-reference">
       <button class="close-photos" aria-label="Close species photos" autofocus>×</button>
