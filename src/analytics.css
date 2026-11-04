@@ -59,7 +59,7 @@
 .ward-dot { stroke: var(--bg); stroke-width: 1px; }
 .ward-dot.is-peek, .ward-dot.is-selected { stroke: var(--text); stroke-width: 2.5px; }
 .ward-annotation { font: 11px var(--font-sans); fill: var(--text-secondary); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; pointer-events: none; }
-.ward-layout { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: 'map-key scatter-key' 'detail detail' 'map scatter'; gap: 18px 36px; margin-top: 24px; }
+.ward-layout { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: 'map-key scatter-key' 'detail detail' 'map scatter'; gap: 18px 36px; margin-top: 12px; }
 .ward-layout > div { min-width: 0; }
 .map-key { grid-area: map-key; }
 .scatter-key { grid-area: scatter-key; }

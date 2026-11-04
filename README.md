@@ -6,7 +6,7 @@ individual census records, and optionally find trees within 500 metres of your
 location. Park summaries and curated species-reference photos provide context
 where the census is incomplete.
 
-The separate `/analytics.html` page is a visual exploration: a species canopy
+The separate `/analytics` page is a visual exploration: a species canopy
 with circle areas proportional to record counts,
 and linked area map and scatter plot using historical boundaries. Hover or use arrow keys for
 reference-photo previews; click or tap a preview for the existing credited

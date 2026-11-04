@@ -41,6 +41,7 @@ class CensusTests(unittest.TestCase):
         self.dist = path / 'dist'
         (self.dist / 'assets').mkdir(parents=True)
         (self.dist / 'index.html').write_text('<h1>Trees</h1>')
+        (self.dist / 'analytics.html').write_text('<h1>Analytics</h1>')
         self.asset = b'console.log("trees");' * 100
         (self.dist / 'assets/index-test123.js').write_bytes(self.asset)
         (self.dist / 'assets/index-test123.js.gz').write_bytes(gzip.compress(self.asset))
@@ -143,6 +144,14 @@ class CensusTests(unittest.TestCase):
         self.addCleanup(index.close)
         self.assertEqual(index.status_code, 200)
         self.assertIn('max-age=0', index.headers['Cache-Control'])
+        for path in ['/analytics', '/analytics.html']:
+            response = client.get(path)
+            self.addCleanup(response.close)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.mimetype, 'text/html')
+            self.assertEqual(response.data, b'<h1>Analytics</h1>')
+        with client.head('/analytics') as response:
+            self.assertEqual(response.data, b'')
         url = '/assets/index-test123.js'
         plain = client.get(url)
         compressed = client.get(url, headers={'Accept-Encoding': 'gzip'})

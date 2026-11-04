@@ -8,7 +8,7 @@ from functools import cache
 from pathlib import Path
 import sqlite3
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from whitenoise import WhiteNoise
 
 ROOT = Path(__file__).parent
@@ -86,6 +86,10 @@ def create_app(database=DATABASE, dist=ROOT / "dist"):
     @cache
     def analytics():
         return run_query("/api/analytics", {})
+
+    @app.get("/analytics")
+    def analytics_page():
+        return send_from_directory(dist, "analytics.html")
 
     @app.get("/healthz")
     def health():
